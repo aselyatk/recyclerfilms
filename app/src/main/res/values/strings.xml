@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">KR_recycleView</string>
     <string name="movie_poster">Poster of the movie</string>
+    <string name="action_search">Поиск</string>
+    <string name="action_add">Добавить</string>
+    <string name="hint_title">Название</string>
+    <string name="hint_genre">Жанр</string>
+    <string name="hint_year">Год выпуска</string>
+    <string name="hint_rating">Рейтинг</string>
+    <string name="hint_poster_url">URL постера</string>
+    <string name="hint_poster_name">Имя постера (без расширения)</string>
+    <string name="hint_review">Ваш отзыв</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="title_add_edit">Добавить / Изменить фильм</string>
+    <string name="action_save">Сохранить</string>
+    <string name="error_empty_title">Введите название фильма</string>
+
 </resources>
