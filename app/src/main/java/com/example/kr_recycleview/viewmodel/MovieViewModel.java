@@ -40,8 +40,12 @@ public class MovieViewModel extends AndroidViewModel {
         repo.update(m);
     }
 
+
     public void delete(Movie m) {
         repo.delete(m);
+    }
+    public void fetchMovieInfo(String title, MovieRepository.FetchCallback cb) {
+        repo.fetchFirstMatch(title, cb);
     }
 }
 

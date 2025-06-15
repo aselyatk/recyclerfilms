@@ -5,22 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- AppBarLayout + Toolbar -->
+    <!-- Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
             app:title="@string/title_add_edit"
-            app:titleTextColor="@color/white"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"/>
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="@color/white"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Сместим контент вниз на высоту тулбара -->
+    <!-- Контент экрана -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_title" />
+                android:text="@string/hint_title"/>
             <EditText
                 android:id="@+id/editTitle"
                 android:layout_width="match_parent"
@@ -50,20 +48,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_genre" />
+                android:text="@string/hint_genre"/>
             <EditText
                 android:id="@+id/editGenre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_genre"
-                android:inputType="text"
                 android:layout_marginBottom="16dp"/>
 
             <!-- Год -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_year" />
+                android:text="@string/hint_year"/>
             <EditText
                 android:id="@+id/editYear"
                 android:layout_width="match_parent"
@@ -76,34 +73,41 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_rating" />
+                android:text="@string/hint_rating"/>
             <RatingBar
                 android:id="@+id/ratingBar"
                 style="?attr/ratingBarStyleIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:numStars="5"
                 android:stepSize="0.5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"/>
 
             <!-- Постер (имя ресурса) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_poster_name" />
+                android:text="@string/hint_poster_name"/>
             <EditText
                 android:id="@+id/editPosterName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_poster_name"
-                android:inputType="text"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Кнопка «Поиск инфо» -->
+            <Button
+                android:id="@+id/btnSearchInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Загрузить инфо"
                 android:layout_marginBottom="16dp"/>
 
             <!-- Рецензия -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_review" />
+                android:text="@string/hint_review"/>
             <EditText
                 android:id="@+id/editReview"
                 android:layout_width="match_parent"
@@ -119,6 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/btn_save"/>
+
         </LinearLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
