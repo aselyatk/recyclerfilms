@@ -6,21 +6,38 @@
     android:layout_height="match_parent">
 
     <!-- 1) Наш тулбар с заголовком и меню -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:title="Мой каталог фильмов"
-        app:titleTextColor="@android:color/white"
-        app:menu="@menu/menu_main" />
+        android:layout_height="?attr/actionBarSize">
 
-    <!-- 2) Список фильмов под тулбаром -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/accent"
+        app:title="Movie Collection"
+        app:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+        app:menu="@menu/menu_main" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 2) Список фильмов сразу под AppBarLayout без marginTop -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
         android:padding="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!-- 3) FAB для добавления фильма -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/action_add"
+        app:srcCompat="@drawable/ic_add"
+        app:layout_anchor="@id/recyclerView"
+        app:layout_anchorGravity="bottom|end" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

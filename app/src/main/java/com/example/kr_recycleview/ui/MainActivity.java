@@ -11,10 +11,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.example.kr_recycleview.R;
 import com.example.kr_recycleview.data.Movie;
 import com.example.kr_recycleview.viewmodel.MovieViewModel;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,37 +27,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 1) Привязываем и устанавливаем наш тулбар
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar);
+        // 1) Тулбар
+        MaterialToolbar tb = findViewById(R.id.toolbarMain);
+        setSupportActionBar(tb);
 
-        // 2) Настройка RecyclerView + Adapter
+        // 2) RecyclerView + Adapter
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         movieAdapter = new MovieAdapter(this, movie -> {
-            // при клике на элемент открываем экран редактирования
-            Intent intent = new Intent(MainActivity.this, AddEditMovieActivity.class);
+            Intent intent = new Intent(this, AddEditMovieActivity.class);
             intent.putExtra("id", movie.id);
             startActivity(intent);
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(movieAdapter);
 
-        // 3) Инициализируем ViewModel и подписываемся на список
+        // 3) ViewModel
         viewModel = new ViewModelProvider(this).get(MovieViewModel.class);
-        viewModel.getAll().observe(this, movies -> {
-            movieAdapter.setMovieList(movies);
-        });
+        viewModel.getAll().observe(this, list -> movieAdapter.setMovieList(list));
+
+        // 4) FAB для добавления
+        FloatingActionButton fab = findViewById(R.id.fabAdd);
+        fab.setOnClickListener(v ->
+                startActivity(new Intent(this, AddEditMovieActivity.class))
+        );
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Подключаем меню с поиском и кнопкой “+”
+        // Меню только с поиском
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Настраиваем SearchView
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView sv = (SearchView) searchItem.getActionView();
-        sv.setQueryHint("Поиск по названию или жанру...");
+        sv.setQueryHint("Поиск по названию или жанру…");
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -70,13 +72,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // Больше не нужно обрабатывать R.id.action_add
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Обработка кнопки “+”
-        if (item.getItemId() == R.id.action_add) {
-            startActivity(new Intent(this, AddEditMovieActivity.class));
-            return true;
-        }
+        // (можно оставить для обработки home/up, если нужно)
         return super.onOptionsItemSelected(item);
     }
 }

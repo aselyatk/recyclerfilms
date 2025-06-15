@@ -76,11 +76,11 @@
                 android:text="@string/hint_rating"/>
             <RatingBar
                 android:id="@+id/ratingBar"
-                style="?attr/ratingBarStyleIndicator"
-                android:numStars="5"
-                android:stepSize="0.5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:isIndicator="false"
                 android:layout_marginBottom="16dp"/>
 
             <!-- Постер (имя ресурса) -->
