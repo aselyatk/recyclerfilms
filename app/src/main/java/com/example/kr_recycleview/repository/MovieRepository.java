@@ -59,6 +59,9 @@ public class MovieRepository {
     public LiveData<List<Movie>> search(String query) {
         return dao.search("%" + query + "%");
     }
+    public LiveData<List<Movie>> getByStatus(int status) {
+        return dao.getByStatus(status);
+    }
 
     public void insert(Movie m) {
         exec.execute(() -> dao.insert(m));

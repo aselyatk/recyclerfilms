@@ -1,11 +1,12 @@
 package com.example.kr_recycleview.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -30,11 +31,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddEditMovieActivity extends AppCompatActivity {
+
     private MovieViewModel vm;
     private EditText editTitle, editGenre, editYear, editPosterName, editReview;
     private RatingBar ratingBar;
-    private Button btnSearchInfo, btnSave;
-    private int movieId = -1;
+    private Spinner  spStatus;                // ← НОВОЕ
+    private Button   btnSearchInfo, btnSave;
+
+    private int  movieId = -1;
     private TMDBService tmdb;
 
     @Override
@@ -42,120 +46,106 @@ public class AddEditMovieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_movie);
 
-        // 1) Toolbar
+        /* ---------- Toolbar ---------- */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.title_add_edit);
 
-        // 2) Retrofit + TMDBService
+        /* ---------- Retrofit ---------- */
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/3/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         tmdb = retrofit.create(TMDBService.class);
 
-        // 3) ViewModel
+        /* ---------- ViewModel ---------- */
         vm = new ViewModelProvider(this).get(MovieViewModel.class);
 
-        // 4) Поля из layout
+        /* ---------- UI элементы ---------- */
         editTitle      = findViewById(R.id.editTitle);
         editGenre      = findViewById(R.id.editGenre);
         editYear       = findViewById(R.id.editYear);
         ratingBar      = findViewById(R.id.ratingBar);
         editPosterName = findViewById(R.id.editPosterName);
         editReview     = findViewById(R.id.editReview);
+        spStatus       = findViewById(R.id.spinnerStatus);      // ←---
         btnSearchInfo  = findViewById(R.id.btnSearchInfo);
         btnSave        = findViewById(R.id.btnSave);
 
-        // 5) Загрузка существующего фильма (если id пришёл в интент)
+        /* ---------- заполняем Spinner статуса ---------- */
+        ArrayAdapter<CharSequence> stAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.movie_statuses,                    // ["Хочу посмотреть", "Просмотрено"]
+                android.R.layout.simple_spinner_item);
+        stAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spStatus.setAdapter(stAdapter);
+
+        /* ---------- если редактируем существующий ---------- */
         if (getIntent().hasExtra("id")) {
             movieId = getIntent().getIntExtra("id", -1);
             vm.getById(movieId).observe(this, m -> {
-                if (m != null) {
-                    editTitle.setText(m.title);
-                    editGenre.setText(m.genre);
-                    editYear.setText(m.year);
-                    ratingBar.setRating((float) m.rating);
-                    editPosterName.setText(m.posterUrl);
-                    editReview.setText(m.review);
-                }
+                if (m == null) return;
+                editTitle.setText(m.title);
+                editGenre.setText(m.genre);
+                editYear.setText(m.year);
+                ratingBar.setRating((float) m.rating);
+                editPosterName.setText(m.posterUrl);
+                editReview.setText(m.review);
+                spStatus.setSelection(m.status);          // ←--- 0 или 1
             });
         }
 
-        // 6) Поиск инфы по TMDB
+        /* ---------- кнопка «Загрузить инфо» ---------- */
         btnSearchInfo.setOnClickListener(v -> {
-            String query = editTitle.getText().toString().trim();
-            if (TextUtils.isEmpty(query)) {
-                editTitle.setError("Введите название для поиска");
+            String q = editTitle.getText().toString().trim();
+            if (TextUtils.isEmpty(q)) {
+                editTitle.setError(getString(R.string.error_empty_title));
                 return;
             }
-            tmdb.searchMovies(BuildConfig.TMDB_API_KEY, query)
+            tmdb.searchMovies(BuildConfig.TMDB_API_KEY, q)
                     .enqueue(new Callback<SearchResponse>() {
-                        @Override
-                        public void onResponse(Call<SearchResponse> call,
-                                               Response<SearchResponse> resp) {
-                            if (resp.isSuccessful() && resp.body() != null
-                                    && !resp.body().results.isEmpty()) {
-                                TMDBMovie first = resp.body().results.get(0);
-                                // Заполняем UI из первого результата
-                                editGenre.setText(TextUtils.join(", ", first.getGenreNames()));
-                                // У TMDBMovie должен быть getReleaseDate()
-                                String date = first.getReleaseDate();
-                                if (date != null && date.length() >= 4) {
-                                    editYear.setText(date.substring(0, 4));
-                                }
-                                // В TMDBMovie.getPosterPath() возвращает строку вида "/abc.jpg"
-                                // Мы сохраняем просто имя без слеша
-                                String poster = first.getPosterPath();
-                                if (poster != null && poster.startsWith("/")) {
-                                    poster = poster.substring(1);
-                                }
-                                editPosterName.setText(poster);
-                                Toast.makeText(AddEditMovieActivity.this,
-                                        String.format(Locale.getDefault(),
-                                                "Найден: %s (%s)", first.getTitle(), date),
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(AddEditMovieActivity.this,
-                                        "Ничего не найдено", Toast.LENGTH_SHORT).show();
+
+                        @Override public void onResponse(Call<SearchResponse> c, Response<SearchResponse> r) {
+                            if (!r.isSuccessful() || r.body()==null || r.body().results.isEmpty()) {
+                                toast("Ничего не найдено"); return;
                             }
+                            TMDBMovie first = r.body().results.get(0);
+                            editGenre.setText(TextUtils.join(", ", first.getGenreNames()));
+                            String rel = first.getReleaseDate();
+                            if (rel!=null && rel.length()>=4) editYear.setText(rel.substring(0,4));
+                            String poster = first.getPosterPath();
+                            if (poster!=null && poster.startsWith("/")) poster = poster.substring(1);
+                            editPosterName.setText(poster);
+                            toast(String.format(Locale.getDefault(),
+                                    "Найден: %s (%s)", first.getTitle(), rel));
                         }
-                        @Override
-                        public void onFailure(Call<SearchResponse> call, Throwable t) {
-                            Toast.makeText(AddEditMovieActivity.this,
-                                    "Ошибка сети: " + t.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
+                        @Override public void onFailure(Call<SearchResponse> c, Throwable t){
+                            toast("Ошибка сети: "+t.getMessage());
                         }
                     });
         });
 
-        // 7) Сохранение локально
+        /* ---------- кнопка «Сохранить» ---------- */
         btnSave.setOnClickListener(v -> {
             String title  = editTitle.getText().toString().trim();
+            if (title.isEmpty()) { editTitle.setError(getString(R.string.error_empty_title)); return; }
+
             String genre  = editGenre.getText().toString().trim();
             String year   = editYear.getText().toString().trim();
             double rate   = ratingBar.getRating();
             String poster = editPosterName.getText().toString().trim();
             String review = editReview.getText().toString().trim();
-            if (title.isEmpty()) {
-                editTitle.setError(getString(R.string.error_empty_title));
-                return;
-            }
-            Movie movie = new Movie(title, year, genre, poster, rate, review);
-            if (movieId >= 0) {
-                movie.id = movieId;
-                vm.update(movie);
-            } else {
-                vm.insert(movie);
-            }
+            int    status = spStatus.getSelectedItemPosition();          // ←--- 0/1
+
+            Movie m = new Movie(title, year, genre, poster, rate, review, status);
+
+            if (movieId >= 0) { m.id = movieId; vm.update(m); } else { vm.insert(m); }
             finish();
         });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
+    private void toast(String msg){ Toast.makeText(this,msg,Toast.LENGTH_SHORT).show(); }
+
+    @Override public boolean onSupportNavigateUp(){ finish(); return true; }
 }

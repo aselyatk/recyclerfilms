@@ -28,6 +28,9 @@ public class MovieViewModel extends AndroidViewModel {
         return repo.getById(id);
     }
 
+    public LiveData<List<Movie>> getByStatus(int status) {
+        return repo.getByStatus(status);
+    }
     public LiveData<List<Movie>> search(String q) {
         return repo.search(q);
     }

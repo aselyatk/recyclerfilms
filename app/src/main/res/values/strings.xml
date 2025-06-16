@@ -14,5 +14,13 @@
     <string name="title_add_edit">Добавить / Изменить фильм</string>
     <string name="action_save">Сохранить</string>
     <string name="error_empty_title">Введите название фильма</string>
-
+    <string-array name="movie_statuses">
+        <item>Хочу посмотреть</item>
+        <item>Просмотрено</item>
+    </string-array>
+    <string-array name="filter_categories">
+        <item>Все</item>
+        <item>Хочу посмотреть</item>
+        <item>Просмотрено</item>
+    </string-array>
 </resources>

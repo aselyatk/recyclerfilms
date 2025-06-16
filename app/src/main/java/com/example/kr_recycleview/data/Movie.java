@@ -14,16 +14,18 @@ public class Movie {
     public String posterUrl;
     public double rating;
     public String review;              // ← добавили поле рецензии
+    public int status;
 
     // Конструктор с новым полем review
     public Movie(String title, String year, String genre,
                  String posterUrl, double rating,
-                 String review) {
+                 String review, int status) {
         this.title     = title;
         this.year      = year;
         this.genre     = genre;
         this.posterUrl = posterUrl;
         this.rating    = rating;
         this.review    = review;
+        this.status    = status;
     }
 }

@@ -11,14 +11,23 @@ import java.util.List;
 
 @Dao
 public interface MovieDao {
+
+    /* ---------- выборки ---------- */
+
     @Query("SELECT * FROM movies ORDER BY title")
     LiveData<List<Movie>> getAll();
+
+    // 0 = «Хочу посмотреть», 1 = «Просмотрено»
+    @Query("SELECT * FROM movies WHERE status = :status ORDER BY title")
+    LiveData<List<Movie>> getByStatus(int status);
 
     @Query("SELECT * FROM movies WHERE title LIKE :q OR genre LIKE :q ORDER BY title")
     LiveData<List<Movie>> search(String q);
 
-    @Query("SELECT * FROM movies WHERE id = :id")
-    LiveData<Movie> getById(int id);      // ← вот он
+    @Query("SELECT * FROM movies WHERE id = :id LIMIT 1")
+    LiveData<Movie> getById(int id);
+
+    /* ---------- изменения ---------- */
 
     @Insert
     void insert(Movie movie);
