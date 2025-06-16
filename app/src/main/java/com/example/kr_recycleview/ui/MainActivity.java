@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
-import android.widget.SearchView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kr_recycleview.R;
 import com.example.kr_recycleview.data.Movie;
+import com.example.kr_recycleview.ui.AddEditMovieActivity;
 import com.example.kr_recycleview.viewmodel.MovieViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,10 +28,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     private MovieViewModel viewModel;
-    private MovieAdapter   movieAdapter;
+    private MovieAdapter movieAdapter;
 
-    // --- UI фильтр ---
-    private Spinner spinnerCategory;     // «Все / Хочу посмотреть / Просмотрено»
+    private Spinner spinnerCategory, spinnerQualityFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +52,16 @@ public class MainActivity extends AppCompatActivity {
         rv.setAdapter(movieAdapter);
 
         /* 3. свайп-удаление */
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView rv,
+                                  @NonNull RecyclerView.ViewHolder vh,
+                                  @NonNull RecyclerView.ViewHolder t) { return false; }
 
-            @Override public boolean onMove(@NonNull RecyclerView r,
-                                            @NonNull RecyclerView.ViewHolder v,
-                                            @NonNull RecyclerView.ViewHolder t) { return false; }
-
-            @Override public void onSwiped(@NonNull RecyclerView.ViewHolder vh, int dir) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder vh, int dir) {
                 Movie m = movieAdapter.getMovieAt(vh.getAdapterPosition());
                 viewModel.delete(m);
             }
@@ -66,66 +69,85 @@ public class MainActivity extends AppCompatActivity {
 
         /* 4. ViewModel */
         viewModel = new ViewModelProvider(this).get(MovieViewModel.class);
-        // по умолчанию показываем все
         viewModel.getAll().observe(this, list -> movieAdapter.setMovieList(list));
 
-        /* 5. Spinner-фильтр категорий */
+        /* 5. Spinner-фильтры */
         spinnerCategory = findViewById(R.id.spinnerCategory);
-        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> p, android.view.View v,
-                                                 int pos, long id) {
-                switch (pos) {
-                    case 0: // Все
-                        viewModel.getAll()
-                                .observe(MainActivity.this,
-                                        list -> movieAdapter.setMovieList(list));
-                        break;
-                    case 1: // Хочу посмотреть  (status = 0)
-                        viewModel.getByStatus(0)
-                                .observe(MainActivity.this,
-                                        list -> movieAdapter.setMovieList(list));
-                        break;
-                    case 2: // Просмотрено     (status = 1)
-                        viewModel.getByStatus(1)
-                                .observe(MainActivity.this,
-                                        list -> movieAdapter.setMovieList(list));
-                        break;
+        spinnerQualityFilter = findViewById(R.id.spinnerQualityFilter);
+
+        // Адаптер для статуса (All / Хочу / Просмотрено / Заброшено)
+        ArrayAdapter<CharSequence> statusAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.filter_categories,
+                R.layout.spinner_item
+        );
+        statusAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinnerCategory.setAdapter(statusAdapter);
+
+        // Адаптер для качества (Все / Не очень / Средне / Лучшее)
+        ArrayAdapter<CharSequence> qualityAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.movie_quality_tags,
+                R.layout.spinner_item
+        );
+        qualityAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinnerQualityFilter.setAdapter(qualityAdapter);
+
+        // Общий слушатель фильтрации
+        AdapterView.OnItemSelectedListener filterListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                int statusPos  = spinnerCategory.getSelectedItemPosition() - 1;
+                int qualityPos = spinnerQualityFilter.getSelectedItemPosition() - 1;
+
+                if (statusPos >= 0 && qualityPos >= 0) {
+                    viewModel.getByStatusAndQuality(statusPos, qualityPos)
+                            .observe(MainActivity.this, movies -> movieAdapter.setMovieList(movies));
+                } else if (statusPos >= 0) {
+                    viewModel.getByStatus(statusPos)
+                            .observe(MainActivity.this, movies -> movieAdapter.setMovieList(movies));
+                } else if (qualityPos >= 0) {
+                    viewModel.getByQuality(qualityPos)
+                            .observe(MainActivity.this, movies -> movieAdapter.setMovieList(movies));
+                } else {
+                    viewModel.getAll()
+                            .observe(MainActivity.this, movies -> movieAdapter.setMovieList(movies));
                 }
             }
-            @Override public void onNothingSelected(AdapterView<?> p) { }
-        });
+            @Override public void onNothingSelected(AdapterView<?> parent) { }
+        };
 
-        /* 6. FloatingActionButton «+» */
+        /* привязываем слушатели */
+        spinnerCategory.setOnItemSelectedListener(filterListener);
+        spinnerQualityFilter.setOnItemSelectedListener(filterListener);
+        // Инициализация списка при старте (необязательно)
+        filterListener.onItemSelected(spinnerCategory, null,
+                spinnerCategory.getSelectedItemPosition(), 0);
+
+        /* 6. FloatingActionButton "+" */
         FloatingActionButton fab = findViewById(R.id.fabAdd);
         fab.setOnClickListener(v ->
                 startActivity(new Intent(this, AddEditMovieActivity.class))
         );
     }
 
-    /* ---------- Меню «лупа» ---------- */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // достаём action-view без cast’а
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        androidx.appcompat.widget.SearchView sv =
-                (androidx.appcompat.widget.SearchView) searchItem.getActionView();
-
+        SearchView sv = (SearchView) searchItem.getActionView();
         sv.setQueryHint("Поиск по названию или жанру…");
-        sv.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) { return false; }
             @Override public boolean onQueryTextChange(String query) {
                 viewModel.search(query)
-                        .observe(MainActivity.this,
-                                movies -> movieAdapter.setMovieList(movies));
+                        .observe(MainActivity.this, movies -> movieAdapter.setMovieList(movies));
                 return true;
             }
         });
         return true;
     }
 
-    /* если нужны другие пункты меню – сюда */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);

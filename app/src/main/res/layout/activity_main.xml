@@ -5,13 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark"> <!-- чтобы текст был белым -->
-
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbarMain"
@@ -20,9 +18,9 @@
             android:background="@color/accent"
             app:title="Movie Collection"
             app:titleTextColor="@android:color/white"
+            app:titleTextAppearance="@style/ToolbarTitleText"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
             app:menu="@menu/menu_main"/>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,34 +28,84 @@
             android:orientation="horizontal"
             android:padding="8dp"
             android:background="@color/accent"
-        app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways">
 
-        <Spinner
-            android:id="@+id/spinnerCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/filter_categories"/>
-    </LinearLayout>
+            <!-- Блок статуса просмотра -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Статус просмотра"
+                    android:textStyle="bold"
+                    android:paddingBottom="4dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp" />
+
+                <Spinner
+                    android:id="@+id/spinnerCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_spinner_status"
+                    android:popupBackground="@android:color/white"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/filter_categories" />
+            </LinearLayout>
+
+            <!-- Разделитель -->
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Блок рейтинга -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Рейтинг"
+                    android:textStyle="bold"
+                    android:paddingBottom="4dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp" />
+
+                <Spinner
+                    android:id="@+id/spinnerQualityFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_spinner_quality"
+                    android:popupBackground="@android:color/white"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/movie_quality_tags" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recyclerView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fabAdd"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    android:contentDescription="@string/action_add"
-    app:srcCompat="@drawable/ic_add"
-    app:layout_anchor="@id/recyclerView"
-    app:layout_anchorGravity="bottom|end"/>
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/action_add"
+        app:srcCompat="@drawable/ic_add"
+        app:layout_anchor="@id/recyclerView"
+        app:layout_anchorGravity="bottom|end" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,4 +5,7 @@
     <color name="red">#d10000</color>
     <color name="grey">#858585 </color>
     <color name="accent">#800000</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_200">#BB86FC</color>   <!-- ← вот это -->
+    <color name="teal_200">#03DAC5</color>
 </resources>

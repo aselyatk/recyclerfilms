@@ -31,6 +31,12 @@ public class MovieViewModel extends AndroidViewModel {
     public LiveData<List<Movie>> getByStatus(int status) {
         return repo.getByStatus(status);
     }
+    public LiveData<List<Movie>> getByQuality(int q) {
+        return repo.getByQuality(q);
+    }
+    public LiveData<List<Movie>> getByStatusAndQuality(int s, int q) {
+        return repo.getByStatusAndQuality(s, q);
+    }
     public LiveData<List<Movie>> search(String q) {
         return repo.search(q);
     }

@@ -36,6 +36,8 @@ public class AddEditMovieActivity extends AppCompatActivity {
     private EditText editTitle, editGenre, editYear, editPosterName, editReview;
     private RatingBar ratingBar;
     private Spinner  spStatus;                // ← НОВОЕ
+    private Spinner spQuality;
+
     private Button   btnSearchInfo, btnSave;
 
     private int  movieId = -1;
@@ -70,16 +72,21 @@ public class AddEditMovieActivity extends AppCompatActivity {
         editPosterName = findViewById(R.id.editPosterName);
         editReview     = findViewById(R.id.editReview);
         spStatus       = findViewById(R.id.spinnerStatus);      // ←---
+        spQuality      = findViewById(R.id.spinnerQuality);
         btnSearchInfo  = findViewById(R.id.btnSearchInfo);
         btnSave        = findViewById(R.id.btnSave);
 
+
         /* ---------- заполняем Spinner статуса ---------- */
-        ArrayAdapter<CharSequence> stAdapter = ArrayAdapter.createFromResource(
+        ArrayAdapter<CharSequence> qualityAdapter = ArrayAdapter.createFromResource(
                 this,
-                R.array.movie_statuses,                    // ["Хочу посмотреть", "Просмотрено"]
-                android.R.layout.simple_spinner_item);
-        stAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spStatus.setAdapter(stAdapter);
+                R.array.movie_quality_tags,
+                android.R.layout.simple_spinner_item    // стандартный layout для элемента спиннера
+        );
+        qualityAdapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item  // layout для выпадающего списка
+        );
+        spQuality.setAdapter(qualityAdapter);
 
         /* ---------- если редактируем существующий ---------- */
         if (getIntent().hasExtra("id")) {
@@ -93,6 +100,7 @@ public class AddEditMovieActivity extends AppCompatActivity {
                 editPosterName.setText(m.posterUrl);
                 editReview.setText(m.review);
                 spStatus.setSelection(m.status);          // ←--- 0 или 1
+                spQuality.setSelection(m.qualityTag != null ? m.qualityTag + 1 : 0);
             });
         }
 
@@ -137,8 +145,10 @@ public class AddEditMovieActivity extends AppCompatActivity {
             String poster = editPosterName.getText().toString().trim();
             String review = editReview.getText().toString().trim();
             int    status = spStatus.getSelectedItemPosition();          // ←--- 0/1
+            int rawQuality = spQuality.getSelectedItemPosition() - 1;
+            Integer qualityTag = rawQuality >= 0 ? rawQuality : null;
 
-            Movie m = new Movie(title, year, genre, poster, rate, review, status);
+            Movie m = new Movie(title, year, genre, poster, rate, review, status, qualityTag);
 
             if (movieId >= 0) { m.id = movieId; vm.update(m); } else { vm.insert(m); }
             finish();

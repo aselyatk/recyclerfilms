@@ -17,10 +17,18 @@
     <string-array name="movie_statuses">
         <item>Хочу посмотреть</item>
         <item>Просмотрено</item>
+        <item>Заброшено</item>
     </string-array>
     <string-array name="filter_categories">
         <item>Все</item>
         <item>Хочу посмотреть</item>
         <item>Просмотрено</item>
+        <item>Заброшено</item>
+    </string-array>
+    <string-array name="movie_quality_tags">
+        <item>Все</item>
+        <item>Не очень</item>
+        <item>Средне</item>
+        <item>Лучшее</item>
     </string-array>
 </resources>

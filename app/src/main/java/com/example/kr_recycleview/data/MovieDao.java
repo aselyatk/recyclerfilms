@@ -21,6 +21,10 @@ public interface MovieDao {
     @Query("SELECT * FROM movies WHERE status = :status ORDER BY title")
     LiveData<List<Movie>> getByStatus(int status);
 
+    @Query("SELECT * FROM movies WHERE qualityTag = :qualityTag ORDER BY title")
+    LiveData<List<Movie>> getByQuality(int qualityTag);
+    @Query("SELECT * FROM movies WHERE status = :status AND qualityTag = :qualityTag ORDER BY title")
+    LiveData<List<Movie>> getByStatusAndQuality(int status, int qualityTag);
     @Query("SELECT * FROM movies WHERE title LIKE :q OR genre LIKE :q ORDER BY title")
     LiveData<List<Movie>> search(String q);
 

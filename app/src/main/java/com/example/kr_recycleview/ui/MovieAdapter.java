@@ -59,6 +59,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.genreTextView.setText(movie.genre);
         holder.yearTextView.setText(movie.year);
         holder.ratingTextView.setText(String.valueOf(movie.rating));
+        int tag = movie.qualityTag != null ? movie.qualityTag : -1;
+            String label;
+            switch (tag) {
+                    case Movie.TAG_BAD:
+                        label = "Не очень";   break;
+                    case Movie.TAG_AVERAGE:
+                        label = "Средне";     break;
+                    case Movie.TAG_BEST:
+                        label = "Лучшее";     break;
+                    default:
+                        label = "";           break;
+                }
+                    holder.qualityTagTextView.setText(label);
 
         // Загружаем постер с TMDB
         if (movie.posterUrl != null && !movie.posterUrl.isEmpty()) {
@@ -93,6 +106,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         final TextView genreTextView;
         final TextView yearTextView;
         final TextView ratingTextView;
+        final TextView qualityTagTextView;
         final ImageView imageView;
 
         MovieViewHolder(@NonNull View itemView) {
@@ -101,6 +115,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             genreTextView  = itemView.findViewById(R.id.genreTextView);
             yearTextView   = itemView.findViewById(R.id.yearTextView);
             ratingTextView = itemView.findViewById(R.id.ratingTextView);
+            qualityTagTextView = itemView.findViewById(R.id.qualityTagTextView);
             imageView      = itemView.findViewById(R.id.imageView);
         }
     }
