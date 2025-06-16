@@ -10,6 +10,9 @@ import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.annotation.NonNull;
+
 
 import com.example.kr_recycleview.R;
 import com.example.kr_recycleview.data.Movie;
@@ -40,6 +43,27 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(movieAdapter);
+
+        new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override public boolean onMove(@NonNull RecyclerView rv,
+                                                    @NonNull RecyclerView.ViewHolder vh,
+                                                    @NonNull RecyclerView.ViewHolder tgt) {
+                        // Перетаскивания не нужны
+                        return false;
+                    }
+
+                    @Override public void onSwiped(@NonNull RecyclerView.ViewHolder vh,
+                                                   int direction) {
+                        // Берём фильм по позиции и удаляем через ViewModel
+                        Movie m = movieAdapter.getMovieAt(vh.getAdapterPosition());
+                        viewModel.delete(m);
+                        // Никакого notifyDataSetChanged() — LiveData сама обновит список
+                    }
+                }
+        ).attachToRecyclerView(recyclerView);
 
         // 3) ViewModel
         viewModel = new ViewModelProvider(this).get(MovieViewModel.class);
