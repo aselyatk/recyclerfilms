@@ -28,9 +28,9 @@
         <!-- Экран добавления/редактирования фильма -->
         <activity
             android:name=".ui.AddEditMovieActivity"
+            android:theme="@style/AppTheme.Edit"
             android:exported="false"
             android:label="@string/title_add_edit"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
             />
 
         <!-- Детальный экран фильма -->

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KR_recycleView</string>
+    <string name="app_name">Movie Collection</string>
     <string name="movie_poster">Poster of the movie</string>
     <string name="action_search">Поиск</string>
     <string name="action_add">Добавить</string>

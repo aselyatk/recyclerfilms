@@ -14,28 +14,29 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="@string/title_add_edit"
+            app:navigationIconTint="@android:color/white"
             android:background="?attr/colorPrimary"
             app:titleTextColor="@color/white"/>
     </com.google.android.material.appbar.AppBarLayout>
+
     <!-- Контент экрана -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:padding="16dp">
-
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
+            <!-- Статус просмотра -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Статус"/>
+                android:text="Статус" />
             <Spinner
                 android:id="@+id/spinnerStatus"
                 android:layout_width="match_parent"
@@ -43,22 +44,23 @@
                 android:entries="@array/movie_statuses"
                 android:layout_marginBottom="16dp"/>
 
+            <!-- Качество -->
             <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Качество" />
-               <Spinner
-                   android:id="@+id/spinnerQuality"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:entries="@array/movie_quality_tags"
-                   android:layout_marginBottom="16dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Качество" />
+            <Spinner
+                android:id="@+id/spinnerQuality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/movie_quality_tags"
+                android:layout_marginBottom="16dp"/>
 
             <!-- Название фильма -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_title"/>
+                android:text="@string/hint_title" />
             <EditText
                 android:id="@+id/editTitle"
                 android:layout_width="match_parent"
@@ -71,7 +73,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_genre"/>
+                android:text="@string/hint_genre" />
             <EditText
                 android:id="@+id/editGenre"
                 android:layout_width="match_parent"
@@ -79,11 +81,11 @@
                 android:hint="@string/hint_genre"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Год -->
+            <!-- Год выпуска -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_year"/>
+                android:text="@string/hint_year" />
             <EditText
                 android:id="@+id/editYear"
                 android:layout_width="match_parent"
@@ -96,7 +98,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_rating"/>
+                android:text="@string/hint_rating" />
             <RatingBar
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
@@ -104,13 +106,16 @@
                 android:numStars="5"
                 android:stepSize="0.5"
                 android:isIndicator="false"
+                android:progressTint="@color/accent"
+                android:secondaryProgressTint="@color/accent"
+                android:progressBackgroundTint="@android:color/darker_gray"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Постер (имя ресурса) -->
+            <!-- Имя постера -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_poster_name"/>
+                android:text="@string/hint_poster_name" />
             <EditText
                 android:id="@+id/editPosterName"
                 android:layout_width="match_parent"
@@ -118,19 +123,25 @@
                 android:hint="@string/hint_poster_name"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Кнопка «Поиск инфо» -->
+            <!-- Кнопка «Загрузить инфо» -->
             <Button
+                style="@style/Widget.MyApp.AccentButton"
                 android:id="@+id/btnSearchInfo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
                 android:text="Загрузить инфо"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_rounded_button"
+                android:layout_marginTop="16dp"/>
 
-            <!-- Рецензия -->
+            <!-- Отзыв -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_review"/>
+                android:text="@string/hint_review"
+                android:textSize="18sp"/>
             <EditText
                 android:id="@+id/editReview"
                 android:layout_width="match_parent"
@@ -140,13 +151,19 @@
                 android:minLines="3"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- Кнопка Сохранить -->
+            <!-- Кнопка «Сохранить» -->
             <Button
+                style="@style/Widget.MyApp.AccentButton"
                 android:id="@+id/btnSave"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_save"/>
+                android:layout_gravity="right"
+                android:text="@string/btn_save"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_rounded_button"
+                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

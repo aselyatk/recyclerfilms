@@ -8,4 +8,5 @@
     <color name="purple_500">#6200EE</color>
     <color name="purple_200">#BB86FC</color>   <!-- ← вот это -->
     <color name="teal_200">#03DAC5</color>
+    <color name="yellow">#FFFF00</color>
 </resources>

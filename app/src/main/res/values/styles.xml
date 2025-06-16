@@ -5,4 +5,26 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+    <style name="AppTheme.Edit" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+    </style>
+    <style name="Widget.MyApp.AccentButton" parent="Widget.MaterialComponents.Button">
+        <!-- не всё ЗАГЛАВНЫМИ -->
+        <item name="android:textAllCaps">false</item>
+        <!-- размер текста -->
+        <item name="android:textSize">18sp</item>
+        <!-- жирность -->
+        <!-- цвет текста -->
+        <item name="android:textColor">@android:color/white</item>
+        <!-- внутренние отступы -->
+        <item name="android:paddingStart">25dp</item>
+        <item name="android:paddingEnd">25dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <!-- скруглённый фон (альтернатива drawable) -->
+        <item name="backgroundTint">@color/accent</item>
+        <item name="android:letterSpacing">-0.02</item>
+
+    </style>
 </resources>
